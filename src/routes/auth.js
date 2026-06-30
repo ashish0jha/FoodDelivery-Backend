@@ -20,7 +20,14 @@ authRouter.post("/signup", async (req, res) => {
             email,
             password: hashPassword
         })
+
         const savedUser = await user.save();
+
+        const token = await jwt.sign({ _id:savedUser._id }, process.env.FOOD_DELIVERY_TOKEN_KEY);
+
+        res.cookie("token", token, {
+            expires: new Date(Date.now() + 8 * 3600 * 1000)
+        });
 
         res.json({
             msg: "User Registered Successfully",
