@@ -26,6 +26,9 @@ authRouter.post("/signup", async (req, res) => {
         const token = await jwt.sign({ _id:savedUser._id }, process.env.FOOD_DELIVERY_TOKEN_KEY);
 
         res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
             expires: new Date(Date.now() + 8 * 3600 * 1000)
         });
 
@@ -59,6 +62,9 @@ authRouter.post("/login", async (req, res) => {
         const token = await jwt.sign({ _id }, process.env.FOOD_DELIVERY_TOKEN_KEY);
 
         res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
             expires: new Date(Date.now() + 8 * 3600 * 1000)
         });
 
