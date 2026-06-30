@@ -2,8 +2,6 @@ const express = require("express");
 require('dotenv').config();
 const connectDB = require('./config/database');
 const cors = require('cors');
-const authRouter = require("./routes/auth");
-const restraRouter = require("./routes/restaurent");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -15,8 +13,13 @@ app.use(cors({
     credentials: true
 }));
 
+const authRouter = require("./routes/auth");
+const restraRouter = require("./routes/restaurent");
+const cartRouter = require("./routes/cart");
+
 app.use("/",authRouter);
 app.use("/",restraRouter);
+app.use("/",cartRouter);
 
 
 connectDB()

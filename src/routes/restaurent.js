@@ -50,16 +50,17 @@ restraRouter.post("/check", async (req, res) => {
 
 restraRouter.get("/restaurent/:resId", userAuth, async (req, res) => {
     try {
-        const {resId} = req.params;
+        const { resId } = req.params;
 
         const resDetails = await individualResSchema.findOne({resId});
 
-        if(!resDetails){
+        if (!resDetails) {
             throw new Error("Invalid restaurent");
         }
 
-        res.json({message:"fetch Successfull",
-            data:resDetails,
+        res.json({
+            message: "fetch Successfull",
+            data: resDetails,
         })
     }
     catch (err) {
