@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser())
 app.use(cors({
-    origin: "http://localhost:1234",
+    origin: process.env.FRONT_END_URL,
     credentials: true
 }));
 
