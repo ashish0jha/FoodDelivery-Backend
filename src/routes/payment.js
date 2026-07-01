@@ -82,7 +82,7 @@ paymentRouter.get("/payment/verify", userAuth, async (req, res) => {
         const { _id } = req.user;
         const order = await PaymentSchema.findOne({userId:_id});
 
-        if(order.status==="Paid"){
+        if(order.status==="captured"){
             return res.json({message:"Payment Done",
                 isPaymentDone:true
             })
