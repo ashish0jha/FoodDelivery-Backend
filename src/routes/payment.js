@@ -46,20 +46,27 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
         console.log("Signaure ",webhookSignature)
 
         const isWebhookValid = validateWebhookSignature(
-            JSON.stringify(req.body),
+            req.body.toString(),
             webhookSignature,
             process.env.RZP_WEBHOOK_SECRET,
-        )
+        );
+
         console.log("isValid ",isWebhookValid);
+        
         if (!isWebhookValid) {
             return res.status(400).json({ message: "Webhook Signature is Invalid" });
         }
         console.log("Hello success payment ")
-        const paymentDetails = req.body.payload.payment.entity;
+
+        const payload = JSON.parse(req.body.toString());
+        const paymentDetails = payload.payload.payment.entity;
+
         console.log("Details ",paymentDetails)
+
         const payment = await PaymentSchema.findOne({ orderId: paymentDetails.order_id });
+
         console.log("payment ",payment)
-        
+
         payment.status = paymentDetails.status;
         const check = await payment.save();
 
@@ -68,7 +75,6 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
         // TODO : Add here this payment to user's payment history
 
         return res.status(200).json({ message: "Webhook received sucessfully" })
-
     }
     catch (err) {
         return res.status(500).json({ message: err.message })
