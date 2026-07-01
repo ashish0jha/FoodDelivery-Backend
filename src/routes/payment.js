@@ -40,6 +40,8 @@ paymentRouter.post("/payment/order", userAuth, async (req, res) => {
 })
 
 paymentRouter.post("/payment/webhook", async (req, res) => {
+    console.log("Body type:", typeof req.body);
+    console.log("Is Buffer:", Buffer.isBuffer(req.body));
     try {
         console.log("Started ")
         const webhookSignature = req.get("X-Razorpay-signature");
@@ -55,7 +57,8 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
             return res.status(400).json({ message: "Webhook Signature is Invalid" });
         }
         console.log("Hello success payment ")
-        const paymentDetails = req.body.payload.payment.entity;
+        const payload = JSON.parse(req.body.toString()); 
+        const paymentDetails = payload.payload.payment.entity;
         console.log("Details ",paymentDetails)
         const payment = await PaymentSchema.findOne({ orderId: paymentDetails.order_id });
         console.log("payment ",payment)

@@ -11,7 +11,12 @@ app.use(
     express.raw({ type: "application/json" })
 );
 
-app.use(express.json());
+app.use((req, res, next) => {
+    if (req.path === "/payment/webhook") {
+        return next();
+    }
+    express.json()(req, res, next);
+});
 app.use(cookieParser())
 app.use(cors({
     origin: process.env.FRONT_END_URL,
