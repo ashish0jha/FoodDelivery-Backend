@@ -45,23 +45,23 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
     try {
         console.log("Started ")
         const webhookSignature = req.get("X-Razorpay-signature");
-        console.log("Signaure ",webhookSignature)
+        console.log("Signaure ", webhookSignature)
 
         const isWebhookValid = validateWebhookSignature(
             req.body.toString(),
             webhookSignature,
             process.env.RZP_WEBHOOK_SECRET,
         );
-        console.log("isValid ",isWebhookValid);
+        console.log("isValid ", isWebhookValid);
         if (!isWebhookValid) {
             return res.status(400).json({ message: "Webhook Signature is Invalid" });
         }
         console.log("Hello success payment ")
-        const payload = JSON.parse(req.body.toString()); 
+        const payload = JSON.parse(req.body.toString());
         const paymentDetails = payload.payload.payment.entity;
-        console.log("Details ",paymentDetails)
+        console.log("Details ", paymentDetails)
         const payment = await PaymentSchema.findOne({ orderId: paymentDetails.order_id });
-        console.log("payment ",payment)
+        console.log("payment ", payment)
 
         payment.status = paymentDetails.status;
         const check = await payment.save();
@@ -77,18 +77,22 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
     }
 })
 
-paymentRouter.get("/payment/verify", userAuth, async (req, res) => {
+paymentRouter.post("/payment/verify", userAuth, async (req, res) => {
     try {
-        const { _id } = req.user;
-        const order = await PaymentSchema.findOne({userId:_id});
-
-        if(order.status==="captured"){
-            return res.json({message:"Payment Done",
-                isPaymentDone:true
+        const { orderId } = req.body;
+        const order = await PaymentSchema.findOne({ ordrId });
+        console.log("order Verify", order)
+        console.log("tmmtm", order.status);
+        if (order.status === "captured") {
+            return res.json({
+                message: "Payment Done",
+                isPaymentDone: true
             })
         }
-        return res.json({message:"Payment failed",
-            isPaymentDone:false
+        console.log("failed again")
+        return res.json({
+            message: "Payment failed",
+            isPaymentDone: false
         })
     }
     catch (err) {
