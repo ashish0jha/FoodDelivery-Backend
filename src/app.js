@@ -16,10 +16,12 @@ app.use(cors({
 const authRouter = require("./routes/auth");
 const restraRouter = require("./routes/restaurent");
 const cartRouter = require("./routes/cart");
+const paymentRouter = require("./routes/payment");
 
 app.use("/",authRouter);
 app.use("/",restraRouter);
 app.use("/",cartRouter);
+app.use("/",paymentRouter)
 
 
 connectDB()
