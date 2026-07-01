@@ -50,21 +50,14 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
             webhookSignature,
             process.env.RZP_WEBHOOK_SECRET,
         );
-
         console.log("isValid ",isWebhookValid);
-        
         if (!isWebhookValid) {
             return res.status(400).json({ message: "Webhook Signature is Invalid" });
         }
         console.log("Hello success payment ")
-
-        const payload = JSON.parse(req.body.toString());
-        const paymentDetails = payload.payload.payment.entity;
-
+        const paymentDetails = req.body.payload.payment.entity;
         console.log("Details ",paymentDetails)
-
         const payment = await PaymentSchema.findOne({ orderId: paymentDetails.order_id });
-
         console.log("payment ",payment)
 
         payment.status = paymentDetails.status;
